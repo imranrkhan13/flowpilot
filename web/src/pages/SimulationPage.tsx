@@ -60,6 +60,9 @@ export default function SimulationPage() {
   const currentState = states[currentStep] ?? null;
   const hasBottleneck = currentState ? currentState.activeBottlenecks > 0 : false;
   const venueType = scenario?.name.toLowerCase().includes('festival') ? 'Festival' : scenario?.name.toLowerCase().includes('station') || scenario?.name.toLowerCase().includes('rail') ? 'Railway station' : 'Stadium';
+  const totalAgents = scenario?.agents.reduce((sum, agent) => sum + agent.count, 0) ?? 0;
+  const arrivalWaves = scenario?.agents.filter((agent) => agent.arrivalTime > 0).length ?? 0;
+  const activeBottlenecks = currentState?.activeBottlenecks ?? 0;
 
   return (
     <main className="flex min-h-screen flex-col bg-[#f7f3ee] text-[#30241e]">
@@ -71,6 +74,12 @@ export default function SimulationPage() {
       </header>
 
       {error && <div className="mx-auto mt-4 w-full max-w-[1500px] px-5 sm:px-8" role="alert"><div className="rounded-2xl border border-[#e5b09a] bg-[#fff2ec] px-4 py-3 text-sm font-semibold text-[#9b4a31]">Error: {error}</div></div>}
+
+      <div className="mx-auto grid w-full max-w-[1500px] gap-3 px-5 pt-5 sm:grid-cols-3 sm:px-8" aria-label="Problem statement inputs and outputs">
+        <div className="rounded-2xl border border-[#dfd2c5] bg-[#fffdf9] px-4 py-3 shadow-[0_8px_20px_rgba(85,55,37,0.04)]"><div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#a35d3f]">Input · Venue layout</div><div className="mt-1 text-sm font-extrabold text-[#4a2e22]">{scenario ? `${scenario.venue.nodes.length} locations · ${scenario.venue.edges.length} links` : 'Loading venue graph'}</div><div className="mt-1 text-xs text-[#806957]">Gates, walkways, zones, and exits</div></div>
+        <div className="rounded-2xl border border-[#dfd2c5] bg-[#fffdf9] px-4 py-3 shadow-[0_8px_20px_rgba(85,55,37,0.04)]"><div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#a35d3f]">Input · Crowd schedule</div><div className="mt-1 text-sm font-extrabold text-[#4a2e22]">{scenario ? `${totalAgents.toLocaleString()} agents · ${arrivalWaves} arrival waves` : 'Loading crowd model'}</div><div className="mt-1 text-xs text-[#806957]">Expected movement over discrete time steps</div></div>
+        <div className="rounded-2xl border border-[#d9c7b8] bg-[#4a2e22] px-4 py-3 text-[#fff8ef] shadow-[0_8px_20px_rgba(85,55,37,0.08)]"><div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#efc49d]">Output · Decision support</div><div className="mt-1 text-sm font-extrabold">{activeBottlenecks > 0 ? `${activeBottlenecks} bottleneck${activeBottlenecks === 1 ? '' : 's'} detected` : 'Monitoring for bottlenecks'}</div><div className="mt-1 text-xs text-[#ead8c9]">Explain, test, and compare a reroute</div></div>
+      </div>
 
       <div className="mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-5 px-5 py-5 sm:px-8 lg:flex-row">
         <section className="flex min-w-0 flex-1 flex-col gap-4" aria-label="Crowd simulation workspace">
