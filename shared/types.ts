@@ -110,6 +110,23 @@ export interface OccupancyRequest {
   zoneId: string;
 }
 
+export interface LiveGateCounter {
+  gateId: string;
+  gateLabel: string;
+  scansLastMinute: number;
+  peopleInside: number;
+  status: 'Open' | 'Busy' | 'Full';
+}
+
+export interface LiveFeedSnapshot {
+  updatedAt: string;
+  totalScans: number;
+  peopleInside: number;
+  gates: LiveGateCounter[];
+  sourceLabel: string;
+  isDemo: boolean;
+}
+
 export interface SimulationResponse {
   scenarioId: string;
   steps: number;

@@ -1,4 +1,4 @@
-import { Scenario, SimulationState, BeforeAfterMetrics, VisionResult, RerouteRecommendation } from '../types';
+import { Scenario, SimulationState, BeforeAfterMetrics, VisionResult, RerouteRecommendation, LiveFeedSnapshot } from '../types';
 
 const API_BASE = '/api';
 
@@ -35,6 +35,25 @@ export async function requestReroute(id: string): Promise<{
     body: JSON.stringify({}),
   });
   if (!res.ok) throw new Error('We could not try the new route');
+  return res.json();
+}
+
+export async function askCrowdQuestion(input: {
+  question: string;
+  scenarioId: string;
+  liveFeed: LiveFeedSnapshot | null;
+  currentState: SimulationState | null;
+  recommendation: RerouteRecommendation | null;
+}): Promise<{ answer: string; mode: 'live-ai' | 'demo'; provider?: string }> {
+  const res = await fetch(`${API_BASE}/crowd/ask`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) {
+    const payload = await res.json().catch(() => null) as { error?: string } | null;
+    throw new Error(payload?.error || 'We could not answer that question');
+  }
   return res.json();
 }
 

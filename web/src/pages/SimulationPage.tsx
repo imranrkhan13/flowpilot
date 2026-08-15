@@ -10,6 +10,7 @@ import CameraPanel from '../components/CameraPanel';
 import BeforeAfter from '../components/BeforeAfter';
 import MetricsChart from '../components/MetricsChart';
 import LiveFeedPanel from '../components/LiveFeedPanel';
+import CrowdAdvisor from '../components/CrowdAdvisor';
 
 type SimStatus = 'idle' | 'loading' | 'ready' | 'playing' | 'paused' | 'completed' | 'error';
 
@@ -123,6 +124,7 @@ export default function SimulationPage() {
 
         <aside className="w-full space-y-4 lg:w-[360px] lg:shrink-0" aria-label="What the app found">
           <LiveFeedPanel feed={liveFeed} />
+          <CrowdAdvisor scenarioId={scenarioId ?? ''} liveFeed={liveFeed} currentState={currentState} recommendation={recommendation} />
           <MetricsPanel state={currentState} status={status} hasBottleneck={hasBottleneck} />
           <RecommendationPanel recommendation={recommendation} beforeAfter={beforeAfter} onReroute={handleReroute} loading={loadingReroute} hasBottleneck={hasBottleneck} status={status} />
           <BeforeAfter beforeAfter={beforeAfter} />
