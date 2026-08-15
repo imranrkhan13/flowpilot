@@ -17,6 +17,16 @@ interface CachedSim {
 const simulationCache = new Map<string, CachedSim>();
 const beforeAfterCache = new Map<string, BeforeAfterMetrics>();
 
+function ensureSimulation(id: string, scenario: Scenario): CachedSim {
+  const cached = simulationCache.get(id);
+  if (cached) return cached;
+  const engine = new SimulationEngine(scenario);
+  const states = engine.run();
+  const sim = { engine, states, scenario, interventionCount: 0 };
+  simulationCache.set(id, sim);
+  return sim;
+}
+
 router.get('/', (_req, res) => { res.json(getAllScenarios()); });
 
 router.get('/:id', (req, res) => {
@@ -48,22 +58,23 @@ router.post('/:id/simulate', (req, res) => {
 });
 
 router.get('/:id/metrics', (req, res) => {
-  const cached = simulationCache.get(req.params.id);
-  if (!cached) { res.status(404).json({ error: 'No simulation found. Run simulate first.' }); return; }
+  const scenario = getScenario(req.params.id);
+  if (!scenario) { res.status(404).json({ error: 'Scenario not found' }); return; }
+  const cached = ensureSimulation(req.params.id, scenario);
   res.json(cached.states[cached.states.length - 1]);
 });
 
 router.get('/:id/states', (req, res) => {
-  const cached = simulationCache.get(req.params.id);
-  if (!cached) { res.status(404).json({ error: 'No simulation found. Run simulate first.' }); return; }
+  const scenario = getScenario(req.params.id);
+  if (!scenario) { res.status(404).json({ error: 'Scenario not found' }); return; }
+  const cached = ensureSimulation(req.params.id, scenario);
   res.json(cached.states);
 });
 
 router.post('/:id/reroute', (req, res) => {
   const scenario = getScenario(req.params.id);
   if (!scenario) { res.status(404).json({ error: 'Scenario not found' }); return; }
-  const cached = simulationCache.get(req.params.id);
-  if (!cached) { res.status(404).json({ error: 'No simulation found. Run simulate first.' }); return; }
+  const cached = ensureSimulation(req.params.id, scenario);
   const lastState = cached.states[cached.states.length - 1];
   const recommendations = findRerouteRecommendations(scenario.venue, lastState, 50);
   if (recommendations.length === 0) {
