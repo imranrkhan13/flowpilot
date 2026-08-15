@@ -39,6 +39,8 @@ export const stadiumScenario: Scenario = {
       { id: 'e_east_je', from: 'east_gate', to: 'junction_e', length: 40, width: 6, capacity: 40, baseTravelTime: 25, bidirectional: true },
       { id: 'e_west_jw', from: 'west_gate', to: 'junction_w', length: 40, width: 6, capacity: 40, baseTravelTime: 25, bidirectional: true },
       { id: 'e_jn_corridor_n', from: 'junction_n', to: 'corridor_n', length: 30, width: 4, capacity: 18, baseTravelTime: 20, bidirectional: true },
+      { id: 'e_jn_corridor_e', from: 'junction_n', to: 'corridor_e', length: 85, width: 5, capacity: 28, baseTravelTime: 48, bidirectional: true },
+      { id: 'e_corridor_e_corridor_n', from: 'corridor_e', to: 'corridor_n', length: 55, width: 5, capacity: 32, baseTravelTime: 32, bidirectional: true },
       { id: 'e_js_corridor_s', from: 'junction_s', to: 'corridor_s', length: 30, width: 4, capacity: 18, baseTravelTime: 20, bidirectional: true },
       { id: 'e_je_corridor_e', from: 'junction_e', to: 'corridor_e', length: 30, width: 4, capacity: 15, baseTravelTime: 18, bidirectional: true },
       { id: 'e_jw_corridor_w', from: 'junction_w', to: 'corridor_w', length: 30, width: 4, capacity: 15, baseTravelTime: 18, bidirectional: true },

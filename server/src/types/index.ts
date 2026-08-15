@@ -1,4 +1,4 @@
-export * from '../../shared/types.js';
+export * from '../../../shared/types.js';
 
 export interface SimulationConfig {
   seed: number;
