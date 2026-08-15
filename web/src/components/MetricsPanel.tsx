@@ -6,54 +6,57 @@ interface Props {
   hasBottleneck: boolean;
 }
 
-const riskColors: Record<string, string> = {
-  Low: 'text-emerald-400',
-  Moderate: 'text-yellow-400',
-  High: 'text-orange-400',
-  Critical: 'text-red-500',
+const riskStyles: Record<string, string> = {
+  Low: 'bg-[#e7f2e7] text-[#3d7147]',
+  Moderate: 'bg-[#fff1d6] text-[#936728]',
+  High: 'bg-[#fde5d4] text-[#a4552f]',
+  Critical: 'bg-[#f7d9d3] text-[#963b2d]',
+};
+
+const statusLabels: Record<string, string> = {
+  loading: 'Loading',
+  ready: 'Ready',
+  playing: 'Running',
+  paused: 'Paused',
+  completed: 'Complete',
+  error: 'Needs attention',
+  idle: 'Idle',
 };
 
 export default function MetricsPanel({ state, status, hasBottleneck }: Props) {
-  if (!state) {
-    return (
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-500 text-sm">
-        {status === 'loading' ? 'Loading metrics...' : 'Run simulation to see metrics'}
-      </div>
-    );
-  }
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Live Metrics</h3>
-        {hasBottleneck && (
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-900/40 text-red-400 animate-pulse">BOTTLENECK</span>
-        )}
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <Metric label="Total Crowd" value={state.totalCrowd.toLocaleString()} />
-        <Metric label="Peak Density" value={`${state.peakDensity.toFixed(2)} /m²`} />
-        <Metric label="Avg Wait Time" value={`${state.avgWaitTime.toFixed(1)}s`} />
-        <Metric label="Throughput" value={state.totalThroughput.toLocaleString()} />
-        <Metric label="Active Bottlenecks" value={state.activeBottlenecks.toString()} highlight={state.activeBottlenecks > 0} />
-        <div className="col-span-2">
-          <div className="text-xs text-slate-500 mb-1">Overall Risk</div>
-          <div className={`text-lg font-bold ${riskColors[state.overallRisk]}`}>{state.overallRisk}</div>
+    <section className="rounded-2xl border border-[#dfd2c5] bg-[#fffdf9] p-4 shadow-[0_10px_28px_rgba(85,55,37,0.06)]" aria-labelledby="metrics-heading">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#a35d3f]">System status</div>
+          <h2 id="metrics-heading" className="mt-1 text-sm font-extrabold text-[#3d281e]">Live simulation</h2>
         </div>
+        <span className="rounded-full bg-[#f1e2d4] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8e5e43]">{statusLabels[status] ?? status}</span>
       </div>
-      {state.interventionApplied && (
-        <div className="mt-3 text-[10px] text-emerald-400 bg-emerald-900/20 border border-emerald-800/40 rounded px-2 py-1">
-          Intervention applied to this simulation
-        </div>
+      <div className="mt-4 grid grid-cols-2 gap-2 border-y border-[#eee4da] py-3">
+        <div><div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#a58b7a]">Data source</div><div className="mt-1 text-xs font-bold text-[#4a2e22]">Deterministic demo</div></div>
+        <div><div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#a58b7a]">Model scope</div><div className="mt-1 text-xs font-bold text-[#4a2e22]">Simplified assumptions</div></div>
+      </div>
+      {!state ? (
+        <p className="py-3 text-sm leading-6 text-[#806957]">{status === 'loading' ? 'Preparing the simulation state…' : 'Run the simulation to see live metrics.'}</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-2.5 pt-1">
+            <Metric label="Total crowd" value={state.totalCrowd.toLocaleString()} />
+            <Metric label="Peak density" value={`${state.peakDensity.toFixed(2)} /m²`} />
+            <Metric label="Average wait" value={`${state.avgWaitTime.toFixed(1)}s`} />
+            <Metric label="Throughput" value={state.totalThroughput.toLocaleString()} />
+            <Metric label="Active bottlenecks" value={state.activeBottlenecks.toString()} highlight={state.activeBottlenecks > 0} />
+            <div className="rounded-xl bg-[#f8f1e9] p-2.5"><div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#a58b7a]">Overall risk</div><div className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-extrabold ${riskStyles[state.overallRisk]}`}>{state.overallRisk}</div></div>
+          </div>
+          {hasBottleneck && <div className="mt-3 rounded-xl border border-[#e5b09a] bg-[#fff2ec] px-3 py-2 text-xs font-bold text-[#9b4a31]">Bottleneck developing — inspect the recommendation below.</div>}
+          {state.interventionApplied && <div className="mt-3 rounded-xl border border-[#b5d5b8] bg-[#eef7ed] px-3 py-2 text-xs font-bold text-[#47774e]">Reroute applied to this simulation.</div>}
+        </>
       )}
-    </div>
+    </section>
   );
 }
 
 function Metric({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div className={`rounded p-2 ${highlight ? 'bg-red-900/10' : ''}`}>
-      <div className="text-xs text-slate-500">{label}</div>
-      <div className={`text-sm font-semibold ${highlight ? 'text-red-400' : 'text-slate-200'}`}>{value}</div>
-    </div>
-  );
+  return <div className={`rounded-xl p-2.5 ${highlight ? 'bg-[#fff0ea]' : 'bg-[#f8f1e9]'}`}><div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#a58b7a]">{label}</div><div className={`mt-1 text-sm font-extrabold ${highlight ? 'text-[#a4552f]' : 'text-[#4a2e22]'}`}>{value}</div></div>;
 }
