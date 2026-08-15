@@ -56,9 +56,9 @@ function buildPrompt(context: CrowdQuestionContext): string {
 function demoAnswer(context: CrowdQuestionContext): string {
   const busiest = context.liveFeed?.gates.slice().sort((a, b) => b.scansLastMinute - a.scansLastMinute)[0];
   if (!busiest) return 'I do not have live gate data yet. Start the place view and ask again when the feed appears.';
-  if (/why|cause|reason/i.test(context.question)) return `${busiest.gateLabel} is getting the most ticket scans right now, so more people are entering there than the other gates. The sample data marks it as ${busiest.status.toLowerCase()}.`;
-  if (/where|which|gate|busy|crowd/i.test(context.question)) return `${busiest.gateLabel} is the busiest gate right now, with about ${busiest.scansLastMinute} scans in the last minute and ${busiest.peopleInside} people counted inside.`;
-  if (/route|move|send|do|help/i.test(context.question)) return context.recommendation ? `Try the suggested route through ${context.recommendation.alternateRouteLabels.join(' → ')}. It is meant to take pressure off ${context.recommendation.affectedEdgeLabel}.` : 'The app is still watching the gates. Press Play and wait for a crowded spot before trying a new route.';
+  if (/why|cause|reason|kyun|kyon|wajah|kaaran|bheed kyu|bheed kyun/i.test(context.question)) return `${busiest.gateLabel} is getting the most ticket scans right now, so more people are entering there than the other gates. The sample data marks it as ${busiest.status.toLowerCase()}.`;
+  if (/where|which|gate|busy|crowd|bheed|kahan|kaunsa|konsa|vyast/i.test(context.question)) return `${busiest.gateLabel} is the busiest gate right now, with about ${busiest.scansLastMinute} scans in the last minute and ${busiest.peopleInside} people counted inside.`;
+  if (/route|move|send|do|help|raasta|rasta|asan|aasaan|easy|jaun|jaana|use karu|chalun/i.test(context.question)) return context.recommendation ? `Try the suggested route through ${context.recommendation.alternateRouteLabels.join(' → ')}. It is meant to take pressure off ${context.recommendation.affectedEdgeLabel}.` : 'The app is still watching the gates. Press Play and wait for a crowded spot before trying a new route.';
   return `Right now, ${busiest.gateLabel} has the most activity. I can explain the busiest gate, why pressure is building, or what route to try next.`;
 }
 
@@ -74,7 +74,7 @@ async function callProvider(provider: ChatProvider, prompt: string): Promise<str
         temperature: 0.2,
         max_tokens: 220,
         messages: [
-          { role: 'system', content: 'You are FlowPilot, a calm crowd-operations helper. Answer in simple English, using only the data in the prompt. Mention when something is a sample or estimate. Never invent a gate, number, or route. Do not give emergency or medical advice. Keep the answer under 90 words.' },
+          { role: 'system', content: 'You are FlowPilot, a calm crowd helper. Understand simple English, Hindi, and Romanized Hinglish such as “kaunsa route easy hai?”, “kahan bheed hai?”, and “kaunsa gate use karun?”. Reply in the same language style as the question when possible. Keep the wording easy and short. Use only the data in the prompt. Mention when something is a sample or estimate. Never invent a gate, number, or route. Do not give emergency or medical advice. Keep the answer under 90 words.' },
           { role: 'user', content: prompt },
         ],
       }),
