@@ -10,11 +10,11 @@ export default function BeforeAfter({ beforeAfter }: Props) {
   const a = beforeAfter.after;
   return (
     <section className="rounded-2xl border border-[#c6ddc7] bg-[#f7fbf4] p-4 shadow-[0_10px_28px_rgba(61,113,71,0.06)]" aria-labelledby="before-after-heading">
-      <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#47774e]">Intervention result</div>
-      <h2 id="before-after-heading" className="mt-1 text-sm font-extrabold text-[#3d281e]">Before / after</h2>
-      <p className="mt-2 text-xs leading-5 text-[#6b806b]">Modelled change after applying the suggested alternate route.</p>
-      <div className="mt-4 space-y-2.5 text-xs"><Row label="Peak density" before={b.peakDensity} after={a.peakDensity} unit="/m²" lowerIsBetter /><Row label="Average wait" before={b.avgWaitTime} after={a.avgWaitTime} unit="s" lowerIsBetter /><Row label="Throughput" before={b.totalThroughput} after={a.totalThroughput} unit="" lowerIsBetter={false} /><Row label="Bottlenecks" before={b.activeBottlenecks} after={a.activeBottlenecks} unit="" lowerIsBetter /></div>
-      <div className="mt-3 flex items-center justify-between border-t border-[#d8e8d7] pt-3 text-xs"><span className="font-semibold text-[#6b806b]">Overall risk</span><div className="flex items-center gap-2"><span className="text-[#9aae9a]">{b.overallRisk}</span><span className="text-[#94ad96]">→</span><span className="rounded-full bg-[#e7f2e7] px-2 py-1 font-extrabold text-[#3d7147]">{a.overallRisk}</span></div></div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#47774e]">What changed</div>
+      <h2 id="before-after-heading" className="mt-1 text-sm font-extrabold text-[#3d281e]">Before and after</h2>
+      <p className="mt-2 text-xs leading-5 text-[#6b806b]">This is what changed after trying the new route.</p>
+      <div className="mt-4 space-y-2.5 text-xs"><Row label="Most crowded" before={b.peakDensity} after={a.peakDensity} unit="/m²" lowerIsBetter /><Row label="Average wait" before={b.avgWaitTime} after={a.avgWaitTime} unit="s" lowerIsBetter /><Row label="People through" before={b.totalThroughput} after={a.totalThroughput} unit="" lowerIsBetter={false} /><Row label="Crowded spots" before={b.activeBottlenecks} after={a.activeBottlenecks} unit="" lowerIsBetter /></div>
+      <div className="mt-3 flex items-center justify-between border-t border-[#d8e8d7] pt-3 text-xs"><span className="font-semibold text-[#6b806b]">Overall concern</span><div className="flex items-center gap-2"><span className="text-[#9aae9a]">{b.overallRisk}</span><span className="text-[#94ad96]">→</span><span className="rounded-full bg-[#e7f2e7] px-2 py-1 font-extrabold text-[#3d7147]">{a.overallRisk}</span></div></div>
     </section>
   );
 }
